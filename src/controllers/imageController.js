@@ -41,7 +41,7 @@ exports.uploadImageHandler = async (req, res) => {
                 results.push({
                     filename: file.originalname,
                     status: 'Rejected',
-                    reason: 'Processing or upload error'
+                    reason: err.message || 'Processing or upload error'
                 });
             }
         }

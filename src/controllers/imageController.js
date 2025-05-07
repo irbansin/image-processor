@@ -23,6 +23,18 @@ exports.uploadImageHandler = async (req, res) => {
                     });
                     continue;
                 }
+                // Duplicate detection by hash
+                const existing = await prisma.image.findUnique({
+                    where: { hash: validationResult.hash }
+                });
+                if (existing) {
+                    results.push({
+                        filename: file.originalname,
+                        status: 'Rejected',
+                        reason: 'Duplicate image detected'
+                    });
+                    continue;
+                }
                 const s3res = await s3.upload({
                     Bucket: process.env.S3_BUCKET,
                     Key: `${Date.now()}-${file.originalname}`,
@@ -33,7 +45,8 @@ exports.uploadImageHandler = async (req, res) => {
                     data: { 
                         filename: file.originalname, 
                         url: s3res.Location,
-                        status: 'Accepted'
+                        status: 'Accepted',
+                        hash: validationResult.hash
                     }
                 });
                 results.push({

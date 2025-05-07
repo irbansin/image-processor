@@ -18,5 +18,6 @@ model Image {
   filename  String
   url       String
   status    String
+  hash      String  @unique
   createdAt DateTime @default(now())
 }

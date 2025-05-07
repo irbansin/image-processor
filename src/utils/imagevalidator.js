@@ -1,5 +1,5 @@
 const sharp = require('sharp');
-const imageHash = require('image-hash');
+const imghash = require('imghash');
 
 exports.validateImage = async (buffer) => {
     const metadata = await sharp(buffer).metadata();
@@ -8,8 +8,10 @@ exports.validateImage = async (buffer) => {
         return { ok: false, reason: 'Image resolution too small' };
 
     // TODO: Add duplicate detection (using perceptual hash)
+    const hash = await imghash.hashRaw(buffer, 16, 'hex');
+
     // TODO: Add blurry detection (via Laplacian Variance)
     // TODO: Add face detection (OpenCV/AWS Rekognition)
 
-    return { ok: true };
+    return { ok: true, hash };
 };

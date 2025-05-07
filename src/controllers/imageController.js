@@ -30,7 +30,11 @@ exports.uploadImageHandler = async (req, res) => {
                     ContentType: 'image/jpeg',
                 }).promise();
                 const image = await prisma.image.create({
-                    data: { filename: file.originalname, url: s3res.Location }
+                    data: { 
+                        filename: file.originalname, 
+                        url: s3res.Location,
+                        status: 'Accepted'
+                    }
                 });
                 results.push({
                     filename: file.originalname,
